@@ -21,9 +21,9 @@ public class ErrorHandler {
         return body;
     }
 
-    @ExceptionHandler(ValidationException.class)
+    @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> handleNotFoundException(ValidationException e) {
+    public Map<String, String> handleNotFoundException(NotFoundException e) {
         Map<String, String> body = new HashMap<>();
         body.put("error", e.getMessage());
         return body;

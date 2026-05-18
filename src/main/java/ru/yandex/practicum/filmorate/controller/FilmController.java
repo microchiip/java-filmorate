@@ -2,8 +2,6 @@ package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -28,13 +26,13 @@ public class FilmController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Film> getFilmById(@PathVariable Long id) {
+    public Film getFilmById(@PathVariable Long id) {
         Film film = films.get(id);
         if (film == null) {
             log.warn("Фильм с id={} не найден", id);
             throw new ValidationException("Фильм с id=" + id + " не найден");
         }
-        return ResponseEntity.ok(film);
+        return film;
     }
 
     @PostMapping
@@ -63,7 +61,7 @@ public class FilmController {
     }
 
     @GetMapping("/popular")
-    public ResponseEntity<List<Film>> getPopularFilms(
+    public List<Film> getPopularFilms(
             @RequestParam(defaultValue = "10") int count,
             @RequestParam(required = false) Integer genreId,
             @RequestParam(required = false) Integer year) {
@@ -84,8 +82,6 @@ public class FilmController {
 
         List<Film> filteredByGenre = filteredByYear;
         if (genreId != null) {
-            // TODO: когда добавите жанры, здесь будет фильтрация
-            // Пока просто логируем, что жанр не поддерживается
             log.debug("Фильтрация по жанру id={} временно не поддерживается", genreId);
         }
 
@@ -96,8 +92,8 @@ public class FilmController {
                 })
                 .limit(count)
                 .collect(Collectors.toList());
-        
-        return ResponseEntity.ok(popularFilms);
+
+        return popularFilms;
     }
 
     private void validateReleaseDate(Film film) {

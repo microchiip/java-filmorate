@@ -2,18 +2,13 @@ package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.model.Event;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @RestController
@@ -61,5 +56,20 @@ public class UserController {
         if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
         }
+    }
+
+    @GetMapping("/{id}/feed")
+    public List<Event> getUserFeed(@PathVariable Long id) {
+        log.info("Запрос на получение ленты событий пользователя с id: {}", id);
+
+        // Проверяем, существует ли пользователь
+        if (!users.containsKey(id)) {
+            log.warn("Пользователь с id={} не найден", id);
+            throw new NotFoundException("Пользователь с id=" + id + " не найден");
+        }
+
+        // Пока возвращаем пустой список, так как функциональность ленты событий
+        // будет реализована в следующем спринте
+        return new ArrayList<>();
     }
 }

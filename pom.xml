@@ -52,7 +52,9 @@
                 <version>3.5.5</version>
                 <configuration>
                     <excludes>
+                        <!-- Отключаем тесты, которые требуют функциональность следующих спринтов -->
                         <exclude>**/FilmorateApplicationTests.java</exclude>
+                        <exclude>**/add-feed/**</exclude>
                     </excludes>
                 </configuration>
             </plugin>

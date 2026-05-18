@@ -15,6 +15,13 @@ import java.util.List;
 @Data
 public class Film {
     private Long id;
+    private Mpa mpa;
+
+    @Data
+    public static class Mpa {
+        private int id;
+        private String name;
+    }
 
     @NotBlank(message = "Название не может быть пустым")
     private String name;

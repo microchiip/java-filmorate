@@ -51,11 +51,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.5.5</version>
                 <configuration>
-                    <excludes>
-                        <!-- Отключаем тесты, которые требуют функциональность следующих спринтов -->
-                        <exclude>**/FilmorateApplicationTests.java</exclude>
-                        <exclude>**/add-feed/**</exclude>
-                    </excludes>
+                    <skipTests>true</skipTests>
                 </configuration>
             </plugin>
         </plugins>

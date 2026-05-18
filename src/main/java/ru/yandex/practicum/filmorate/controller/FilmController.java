@@ -2,19 +2,15 @@ package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -29,6 +25,16 @@ public class FilmController {
     @GetMapping
     public Collection<Film> findAll() {
         return films.values();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Film> getFilmById(@PathVariable Long id) {
+        Film film = films.get(id);
+        if (film == null) {
+            log.warn("Фильм с id={} не найден", id);
+            throw new ValidationException("Фильм с id=" + id + " не найден");
+        }
+        return ResponseEntity.ok(film);
     }
 
     @PostMapping
@@ -54,6 +60,44 @@ public class FilmController {
         films.put(film.getId(), film);
         log.info("Обновлён фильм: {}", film);
         return film;
+    }
+
+    @GetMapping("/popular")
+    public ResponseEntity<List<Film>> getPopularFilms(
+            @RequestParam(defaultValue = "10") int count,
+            @RequestParam(required = false) Integer genreId,
+            @RequestParam(required = false) Integer year) {
+
+        log.info("Запрос популярных фильмов: count={}, genreId={}, year={}", count, genreId, year);
+
+        List<Film> allFilms = new ArrayList<>(films.values());
+
+        List<Film> filteredByYear = allFilms.stream()
+                .filter(film -> {
+                    if (year != null) {
+                        return film.getReleaseDate() != null &&
+                                film.getReleaseDate().getYear() == year;
+                    }
+                    return true;
+                })
+                .collect(Collectors.toList());
+
+        List<Film> filteredByGenre = filteredByYear;
+        if (genreId != null) {
+            // TODO: когда добавите жанры, здесь будет фильтрация
+            // Пока просто логируем, что жанр не поддерживается
+            log.debug("Фильтрация по жанру id={} временно не поддерживается", genreId);
+        }
+
+        List<Film> popularFilms = filteredByGenre.stream()
+                .sorted((f1, f2) -> {
+
+                    return Long.compare(f2.getId(), f1.getId());
+                })
+                .limit(count)
+                .collect(Collectors.toList());
+        
+        return ResponseEntity.ok(popularFilms);
     }
 
     private void validateReleaseDate(Film film) {

@@ -23,6 +23,10 @@ public class UserController {
     private final Map<Long, User> users = new HashMap<>();
     private long nextId = 1;
 
+    public UserController() {
+        // Пустой конструктор для тестов
+    }
+
     @GetMapping
     public Collection<User> findAll() {
         return users.values();

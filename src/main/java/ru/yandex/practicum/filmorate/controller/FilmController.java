@@ -25,6 +25,10 @@ public class FilmController {
         return films.values();
     }
 
+    public FilmController() {
+        // Пустой конструктор для тестов
+    }
+
     @GetMapping("/{id}")
     public Film getFilmById(@PathVariable Long id) {
         Film film = films.get(id);

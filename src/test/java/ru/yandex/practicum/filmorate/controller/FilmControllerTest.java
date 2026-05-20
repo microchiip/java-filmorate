@@ -2,8 +2,10 @@ package ru.yandex.practicum.filmorate.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.storage.DataStore;
 
 import java.time.LocalDate;
 
@@ -17,7 +19,7 @@ class FilmControllerTest {
 
     @BeforeEach
     void setUp() {
-        controller = new FilmController();
+        controller = new FilmController(new DataStore());
     }
 
     private Film validFilm() {
@@ -61,7 +63,7 @@ class FilmControllerTest {
     void updateWithUnknownIdFails() {
         Film film = validFilm();
         film.setId(999L);
-        assertThrows(ValidationException.class, () -> controller.update(film));
+        assertThrows(NotFoundException.class, () -> controller.update(film));
     }
 
     @Test

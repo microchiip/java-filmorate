@@ -1,0 +1,30 @@
+package ru.yandex.practicum.filmorate.model;
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Pattern;
+import lombok.Data;
+
+import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
+
+@Data
+public class User {
+    private Long id;
+    private final Set<Long> friends = new HashSet<>();
+
+    @NotBlank(message = "Электронная почта не может быть пустой")
+    @Email(message = "Электронная почта должна содержать символ @ и иметь корректный формат")
+    private String email;
+
+    @NotBlank(message = "Логин не может быть пустым")
+    @Pattern(regexp = "\\S+", message = "Логин не может содержать пробелы")
+    private String login;
+
+    private String name;
+
+    @Past(message = "Дата рождения не может быть в будущем")
+    private LocalDate birthday;
+}
